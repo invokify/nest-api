@@ -3,7 +3,7 @@ name: Deploy Supabase Migrations
 on:
   push:
     branches:
-      - main  # Change this to your deployment branch if needed
+      - main # Change this to your deployment branch if needed
 
 jobs:
   apply_migrations:
@@ -13,18 +13,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Install Supabase CLI
-        uses: supabase/setup-cli@v1.3.0
-        with:
-          # Version of Supabase CLI to install
-          version: 1.136.3 # optional, default is 1.136.3
-
       - name: Link Supabase Project
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-        run: supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF }} --password ${{ secrets.SUPABASE_PASSWORD }} --debug
+        run: npx supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF }} --password ${{ secrets.SUPABASE_PASSWORD }} --debug
 
       - name: Apply Supabase Migrations
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-        run: supabase db push
+        run: npx supabase db push
