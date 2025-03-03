@@ -5,7 +5,7 @@ CREATE TABLE public.products (
     description TEXT,
     price DECIMAL(10,2) NOT NULL CHECK (price >= 0),
     stock_quantity INTEGER NOT NULL CHECK (stock_quantity >= 0),
-    owner_id TEXT NOT NULL,
+    owner_id UUID NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
     updated_at TIMESTAMP DEFAULT now()
 );
@@ -27,12 +27,18 @@ USING (true);
 CREATE POLICY "Allow authenticated users to insert products"
 ON public.products
 FOR INSERT
-USING (auth.role() = 'authenticated');
+WITH CHECK (auth.role() = 'authenticated');
 
--- Allow authenticated users to update/delete products they own
-CREATE POLICY "Allow owners to modify their products"
+-- Allow authenticated users to update products they own
+CREATE POLICY "Allow owners to update their products"
 ON public.products
-FOR UPDATE, DELETE
+FOR UPDATE
+USING (auth.role() = 'authenticated' AND auth.uid() = owner_id);
+
+-- Allow authenticated users to delete products they own
+CREATE POLICY "Allow owners to delete their products"
+ON public.products
+FOR DELETE
 USING (auth.role() = 'authenticated' AND auth.uid() = owner_id);
 
 -- Allow only admin users to insert/update/delete products
