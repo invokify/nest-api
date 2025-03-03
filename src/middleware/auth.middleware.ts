@@ -1,10 +1,16 @@
-import { NestMiddleware, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NestMiddleware,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { SupabaseService } from '../supabase/supabase.service';
-interface CustomRequest extends Request {
+
+export interface CustomRequest extends Request {
   user?: any;
 }
 
+@Injectable()
 export class AuthMiddleware implements NestMiddleware {
   constructor(private readonly supabaseService: SupabaseService) {}
 
@@ -14,10 +20,17 @@ export class AuthMiddleware implements NestMiddleware {
       throw new UnauthorizedException('No token provided');
     }
 
+    if (!this.supabaseService) {
+      throw new UnauthorizedException('SupabaseService not initialized');
+    }
+
     const token = authHeader.split(' ')[1];
-    const { data, error } = await this.supabaseService
-      .getClient()
-      .auth.getUser(token);
+    const client = this.supabaseService.getClient();
+    if (!client) {
+      throw new UnauthorizedException('Supabase client not initialized');
+    }
+
+    const { data, error } = await client.auth.getUser(token);
 
     if (error || !data.user) {
       throw new UnauthorizedException('Invalid or expired token');

@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 
 @Controller('auth')
@@ -21,5 +21,16 @@ export class AuthController {
     }
 
     return { user: data.user, token: data.session?.access_token };
+  }
+
+  @Get('logout')
+  async logout() {
+    const { error } = await this.supabaseService.getClient().auth.signOut();
+
+    if (error) {
+      return { error: error.message };
+    }
+
+    return { message: 'Logged out' };
   }
 }
