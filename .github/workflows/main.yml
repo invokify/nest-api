@@ -17,7 +17,7 @@ jobs:
         uses: supabase/setup-cli@v1.3.0
         with:
           # Version of Supabase CLI to install
-          version: 2.17.0 # optional, default is 1.136.3
+          version: 1.136.3 # optional, default is 1.136.3
 
       - name: Link Supabase Project
         run: supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
