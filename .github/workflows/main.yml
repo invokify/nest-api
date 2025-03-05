@@ -3,7 +3,7 @@ name: Deploy Supabase Migrations
 on:
   push:
     branches:
-      - main # Change this to your deployment branch if needed
+      - main # Change this to your deployment branch if needed.
 
 jobs:
   apply_migrations:
