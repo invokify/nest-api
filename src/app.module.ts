@@ -7,6 +7,7 @@ import { AuthController } from './auth/auth.controller';
 import configuration from './config/configuration';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { SupabaseModule } from './supabase/supabase.module';
+import { ProductsModule } from './api/products/products.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { SupabaseModule } from './supabase/supabase.module';
       load: [configuration],
     }),
     SupabaseModule,
+    ProductsModule,
   ],
   controllers: [AppController, AuthController, ProfileController],
   providers: [AppService],
