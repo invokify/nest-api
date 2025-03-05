@@ -20,7 +20,26 @@ export class AuthController {
       return { error: error.message };
     }
 
-    return { user: data.user, token: data.session?.access_token };
+    return {
+      user: data.user,
+      token: data.session?.access_token,
+      refresh_token: data.session?.refresh_token
+    };
+  }
+
+  @Post('refresh')
+  async refreshToken(@Body() { refresh_token }: { refresh_token: string }) {
+    const { data, error } = await this.supabaseService
+      .getClient()
+      .auth.refreshSession({
+        refresh_token,
+      });
+
+    if (error) {
+      return { error: error.message };
+    }
+
+    return { user: data.user, token: data.session?.access_token, refreshToken: data.session?.refresh_token };
   }
 
   @Get('logout')
