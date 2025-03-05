@@ -6,9 +6,8 @@ on:
       - main # Change this to your deployment branch if needed.
 
 jobs:
-  apply_migrations:
+  test:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -23,6 +22,14 @@ jobs:
 
       - name: Run Tests
         run: npm test
+
+  apply_migrations:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
       - name: Link Supabase Project
         env:
