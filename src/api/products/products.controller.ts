@@ -25,7 +25,6 @@ export class ProductsController {
     this.logger.debug(`Request user object: ${JSON.stringify(req.user)}`);
     
     const ownerId = req.user?.id;
-    console.log('Request user object:', req.user, 'Owner ID:', ownerId);
     if (!ownerId) {
       this.logger.error('Attempted to create product without authentication');
       throw new UnauthorizedException('User must be authenticated to create products');
