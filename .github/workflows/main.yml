@@ -16,12 +16,13 @@ jobs:
       - name: Link Supabase Project
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
         run: |
           # Try the operation up to 3 times
           for i in 1 2 3; do
-            npx supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF }} --password ${{ secrets.SUPABASE_PASSWORD }} && break
+            npx supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF }} --password "$SUPABASE_DB_PASSWORD" --debug && break
             echo "Attempt $i failed. Retrying..."
-            sleep 5
+            sleep 10
           done
 
       - name: Update Supabase Config
@@ -32,9 +33,10 @@ jobs:
       - name: Apply Supabase Migrations
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
         run: |
-          npx supabase db push || {
-            echo "Migration failed. Checking logs..."
-            npx supabase db reset
+          npx supabase db push --password "$SUPABASE_DB_PASSWORD" --debug || {
+            echo "Migration failed. Showing detailed logs..."
+            npx supabase status
             exit 1
           }
