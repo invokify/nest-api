@@ -40,3 +40,6 @@ CI is implemented using a Github Action, defined at `.github/workflows/main.yml`
 It has 2 jobs:
 - Tests
 - Apply Database Migration
+
+## Documentation
+A swagger is available at `http://localhost:3001/api`
